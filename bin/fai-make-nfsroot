@@ -471,17 +471,17 @@ add_packages_nfsroot() {
 umount_dirs() {
 
     cd /
-    [ -d $NFSROOT/proc/self ] && umount $NFSROOT/proc
-    [ -d $NFSROOT/sys/class ] && umount $NFSROOT/sys
+    [ -d $NFSROOT/proc/self ] && umount -l $NFSROOT/proc
+    [ -d $NFSROOT/sys/class ] && umount -l $NFSROOT/sys
     [ -d $NFSROOT/proc/self ] && die 1 "/proc still mounted inside the nfsroot."
-    umount $NFSROOT/dev/pts 2> /dev/null || true
+    umount -l $NFSROOT/dev/pts 2> /dev/null || true
 
     if mount | grep -q "on $NFSROOT/var/lib/dpkg type tmpfs" ; then
         /usr/lib/fai/mkramdisk -u $NFSROOT/var/lib/dpkg $NFSROOT/var/cache
     fi
 
     if [ -n "$FAI_DEBMIRROR" ]; then
-        test -d $NFSROOT/$MNTPOINT && umount $NFSROOT/$MNTPOINT || true
+        test -d $NFSROOT/$MNTPOINT && umount -l $NFSROOT/$MNTPOINT || true
     fi
     # show directories still mounted on nfsroot
     mount | grep " on $NFSROOT " || true
